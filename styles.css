@@ -43,7 +43,7 @@
     grid-column: 1/3;
 }
 
-.button{
+button{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -54,6 +54,8 @@
     border-radius: 50%;
     background-color: grey;
     border: none;
+    font-size: 25px;
+    font-weight: bold;
 }
 
 .funcbutton{
@@ -66,15 +68,14 @@
     border-radius: 40px;
 }
 
-button{
-    font-size: 25px;
-    font-weight: bold;
-}
-
 .chosen-button-display{
     font-size: 50px;
     position: absolute;
     top: 50%;
     right: 5%;
     transform: translate(0,-50%) ;
+}
+
+.inserted{
+    opacity: 0.3;
 }

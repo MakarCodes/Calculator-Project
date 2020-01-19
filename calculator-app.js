@@ -1,88 +1,128 @@
-
-const keys = document.querySelector('.grid-container');
-let resultWindow = document.querySelector('.chosen-button-display');
+const resultWindow = document.querySelector('.chosen-button-display');
+const buttonsContainer = document.querySelector('.grid-container');
+const buttons = document.getElementsByTagName('button');
 let equationArray = [];
-let chosenNumber = "";
-let operatorSymbol = ""
+let numberFromScreen = "";
+// console.log(resultWindow.innerText);
+// console.log(resultWindow.textContent);
 
+buttonsContainer.addEventListener('click', e => {
+    const button = e.target;
+    const buttonValue = e.target.value;
+    // let currentContentOnScreen = resultWindow.textContent; <- czemu jak zrobię zmienną to nie działa?
 
-keys.addEventListener('click', e => {
-    if(e.target.classList.contains('button')){
-        const key = e.target;
-        const displayNumber = resultWindow.textContent;
-
-        if(key.classList.contains('digit-button')){
-            if(displayNumber === '0'){
-                resultWindow.textContent = key.value;
-                chosenNumber = key.value;
+    // Remove insrted class from all keys
+    Array.from(buttons)
+    .forEach(k => k.classList.remove('inserted'))
+    // console.log(buttons)
+     
+    //when user click on buttons
+   if(button.tagName === 'BUTTON'){
+    // when digit button is inserted
+        if(button.classList.contains('digit-button')){
+            if(resultWindow.innerText === "" || resultWindow.innerText === '0'){
+            resultWindow.textContent = buttonValue;
+            numberFromScreen = buttonValue;
             } else {
-                resultWindow.textContent = displayNumber + key.value;
-                chosenNumber += key.value;
+            resultWindow.textContent += buttonValue;  
+            numberFromScreen += buttonValue;
             }
         }
 
-        if(key.classList.contains('operation-button')){
-            console.log(chosenNumber)
-            equationArray.push(chosenNumber);
-            chosenNumber = "";
-            // equationArray.push(key.value);
-            resultWindow.textContent = displayNumber + key.value;
-            console.log(equationArray);
-            operatorSymbol = key.value;
-        }
-
-        if(key.classList.contains('result')){
-            equationArray.push(chosenNumber);
-            console.log(equationArray);
-            operate(equationArray, operatorSymbol);
-        }
-
-        // if(key.classList.contains('decimal')){
-
-        // }
+    // when operator button is inserted
+    if(button.classList.contains('operation-button')){
+        button.classList.add('inserted');
+        equationArray.push(numberFromScreen);
+        equationArray.push(buttonValue);
+        resultWindow.textContent += buttonValue;
+        numberFromScreen = ""
+        console.log(equationArray);
     }
+
+    if(button.classList.contains('decimal')){
+        //check if there is colon already inside the number
+        // if(numberFromScreen.contains(","))
+        numberFromScreen += '.';
+        resultWindow.textContent += '.';
+    }
+
+    if(button.classList.contains('result')){
+        button.classList.add('inserted');
+        equationArray.push(numberFromScreen);
+        numberFromScreen = ""
+        console.log(equationArray);
+        // console.log(typeof(equationArray[0]))
+        equationSolvingFunction(convertEquationStringToArray(equationArray));
+    }
+
+   }
 })
 
+// function, which convert strings numbers to numbers
+function convertEquationStringToArray(equation) {
+    let equationArray = [];
+    let num = '';
+    for (let x = 0; x < equation.length; x ++) {
+        if (!isNaN(equation[x]) || equation[x] === ',') {
+            num += equation[x];
+        } else {
+            equationArray.push(Number(num));
+            equationArray.push(equation[x]);
+            num = '';
+        }
+    }
+    equationArray.push(Number(num));
+    console.log(equationArray);
+    return equationArray;
+}
 
-// operate function which takes 2 numbers and one operator and call appropriate function add/subtract/divide/multiply
-function operate(calcNumber, operatorSymbol){
-    switch(operatorSymbol){
-        case "+":
-            addingFunction(calcNumber[0], calcNumber[1]);
+// function, which calculate equation in array
+function equationSolvingFunction(equationArray){
+    for(let x = 0; x < equationArray.length; x++){
+        if(equationArray[x] === 'x' || equationArray[x] === '÷'){
+            equationArray.splice(x-1, 3, (operate(equationArray[x-1], equationArray[x+1], equationArray[x])));
+            x -= 1;
+        }
+    }
+
+    for(let x = 0; x < equationArray.length; x++){
+        if(equationArray[x] === '+' || equationArray[x] === '-'){
+            equationArray.splice(x-1, 3, (operate(equationArray[x-1], equationArray[x+1], equationArray[x])));
+            x -= 1;
+        }
+    }
+
+    console.log(equationArray[0].toString());
+    return(equationArray[0].toString());
+}
+
+function operate(num1, num2, operator){
+    switch (operator){
+        case '+':
+            return add(num1, num2);
             break;
-        case "-":
-            subtractingFunction(calcNumber[0], calcNumber[1]);
+        case '-':
+            return subtract(num1, num2);
             break;
-        case "x":
-            multiplyingFunction(calcNumber[0], calcNumber[1]);
+        case '÷':
+            return divide(num1, num2);
             break;
-        case "/":
-            dividingFunction(calcNumber[0], calcNumber[1]);
+        case 'x':
+            return multiply(num1, num2);
             break;
     }
 }
 
+//function expression
+// const add = function (a, b){
+//     return a+b;
+// }
+// CALCULATING FUNCTIONS
 
-function addingFunction(a, b){
-    console.log(a + b);
-    resultWindow.textContent = a + b;
-    return a + b;
-}
+const add = (a, b) => a+b;
+const subtract = (a, b) => a-b;
+const multiply = (a, b) => a*b;
+const divide = (a, b) => a/b;
 
-function subtractingFunction(a, b){
-    console.log(a - b);
-    resultWindow.textContent = a - b;
-    return a - b;
-}
-
-function multiplyingFunction(a, b){
-    console.log(a * b);
-    resultWindow.textContent = a * b;
-    return a * b;
-}
-
-function dividingFunction(a, b){
-    console.log(a / b);
-    resultWindow.textContent = a / b;
-    return a / b;
-}
+// let test = [9, "x", 9, "-", 6, "+", 0];
+// equationSolvingFunction(test);
