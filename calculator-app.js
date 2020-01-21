@@ -41,9 +41,12 @@ buttonsContainer.addEventListener('click', e => {
 
     if(button.classList.contains('decimal')){
         //check if there is colon already inside the number
-        // if(numberFromScreen.contains(","))
-        numberFromScreen += '.';
-        resultWindow.textContent += '.';
+        if(numberFromScreen.includes('.')){
+            alert('No more decimals MEIN FREUND!!!')
+        } else{
+            numberFromScreen += '.';
+            resultWindow.textContent += '.';
+        }
     }
 
     if(button.classList.contains('result')){
@@ -52,25 +55,41 @@ buttonsContainer.addEventListener('click', e => {
         numberFromScreen = ""
         console.log(equationArray);
         // console.log(typeof(equationArray[0]))
-        equationSolvingFunction(convertEquationStringToArray(equationArray));
+        resultWindow.innerText = equationSolvingFunction(convertEquationStringToArray(equationArray));
     }
+
+    if(button.id === 'reset'){
+        equationArray = [];
+        numberFromScreen = '';
+        resultWindow.textContent = '';
+    }
+
+    if(button.id === 'plus-minus'){
+        if(Number(numberFromScreen) > 0){
+            numberFromScreen = '-' + numberFromScreen;
+        } 
+    }
+
 
    }
 })
 
-// function, which convert strings numbers to numbers
+// function, which convert string numbers to numbers
 function convertEquationStringToArray(equation) {
     let equationArray = [];
     let num = '';
     for (let x = 0; x < equation.length; x ++) {
+        console.log(isNaN(equation[x]))
         if (!isNaN(equation[x]) || equation[x] === ',') {
             num += equation[x];
         } else {
+            //Number() convert data type to number
             equationArray.push(Number(num));
             equationArray.push(equation[x]);
             num = '';
         }
     }
+    // for the last index
     equationArray.push(Number(num));
     console.log(equationArray);
     return equationArray;
