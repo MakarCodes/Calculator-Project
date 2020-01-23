@@ -50,12 +50,16 @@ buttonsContainer.addEventListener('click', e => {
     }
 
     if(button.classList.contains('result')){
-        button.classList.add('inserted');
         equationArray.push(numberFromScreen);
-        numberFromScreen = ""
-        console.log(equationArray);
-        // console.log(typeof(equationArray[0]))
-        resultWindow.innerText = equationSolvingFunction(convertEquationStringToArray(equationArray));
+        if(isNaN(equationArray[equationArray.length-1]) === true){
+            alert('Equation must with the digit ends meine FREUND!')
+        } else{
+            button.classList.add('inserted');
+            numberFromScreen = ""
+            console.log(equationArray);
+            // console.log(typeof(equationArray[0]))
+            resultWindow.innerText = equationSolvingFunction(convertEquationStringToArray(equationArray));
+        }
     }
 
     if(button.id === 'reset'){
@@ -65,9 +69,47 @@ buttonsContainer.addEventListener('click', e => {
     }
 
     if(button.id === 'plus-minus'){
+        let newDisplay = '';
+        console.log(numberFromScreen)
         if(Number(numberFromScreen) > 0){
-            numberFromScreen = '-' + numberFromScreen;
-        } 
+            console.log(numberFromScreen)
+            equationArray.forEach(element => {
+                newDisplay += element;           })
+            numberFromScreen = "-" + numberFromScreen;
+            newDisplay = newDisplay + `(${numberFromScreen})`;
+            resultWindow.textContent = newDisplay;
+        } else if (Number(numberFromScreen) < 0){
+            equationArray.forEach(element => {
+                newDisplay += element;           })
+            numberFromScreen = numberFromScreen.replace('-', '');
+            newDisplay = newDisplay + `${numberFromScreen}`;
+            resultWindow.textContent = newDisplay;
+        }
+    }
+
+    if(button.id === 'delete'){
+        let newDisplay = '';
+        equationArray.forEach(element => {
+            newDisplay += element;           
+        })
+        // if current display is number
+        let numberArray = numberFromScreen.split("");
+        console.log(numberArray)
+        numberArray.pop();
+        numberFromScreen = numberArray.toLocaleString();
+        console.log(numberArray)
+        console.log(equationArray)
+        resultWindow.textContent = newDisplay + numberFromScreen;
+        // console.log(numberFromScreen);
+        // equationArray.push(numberFromScreen);
+        // numberFromScreen = ""
+        // console.log(equationArray);
+        // console.log(equationArray[equationArray.length-2])
+    //   if((equationArray[equationArray.length-1]) == "+"){
+    //       equationArray.pop();
+    //       console.log(equationArray);
+    //   }
+        
     }
 
 

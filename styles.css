@@ -71,9 +71,10 @@ button{
 .chosen-button-display{
     font-size: 50px;
     position: absolute;
+    top: 30px;
     top: 50%;
     right: 5%;
-    transform: translate(0,-50%) ;
+    transform: translate(0,-50%);
 }
 
 .inserted{
