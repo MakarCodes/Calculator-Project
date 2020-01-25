@@ -3,6 +3,7 @@ const buttonsContainer = document.querySelector('.grid-container');
 const buttons = document.getElementsByTagName('button');
 let equationArray = [];
 let numberFromScreen = "";
+let previousButtonisOperator = false;
 // console.log(resultWindow.innerText);
 // console.log(resultWindow.textContent);
 
@@ -27,16 +28,21 @@ buttonsContainer.addEventListener('click', e => {
             resultWindow.textContent += buttonValue;  
             numberFromScreen += buttonValue;
             }
+            console.log(previousButtonisOperator)
+            previousButtonisOperator = false;
         }
 
     // when operator button is inserted
-    if(button.classList.contains('operation-button')){
+    console.log(previousButtonisOperator)
+    console.log(equationArray)
+    if(button.classList.contains('operation-button') && previousButtonisOperator === false){
+        previousButtonisOperator = true;
         button.classList.add('inserted');
         equationArray.push(numberFromScreen);
         equationArray.push(buttonValue);
         resultWindow.textContent += buttonValue;
-        numberFromScreen = ""
-        console.log(equationArray);
+        numberFromScreen = "";
+        console.log(previousButtonisOperator)
     }
 
     if(button.classList.contains('decimal')){
@@ -47,6 +53,7 @@ buttonsContainer.addEventListener('click', e => {
             numberFromScreen += '.';
             resultWindow.textContent += '.';
         }
+        previousButtonisOperator = false;
     }
 
     if(button.classList.contains('result')){
@@ -60,12 +67,14 @@ buttonsContainer.addEventListener('click', e => {
             // console.log(typeof(equationArray[0]))
             resultWindow.innerText = equationSolvingFunction(convertEquationStringToArray(equationArray));
         }
+        previousButtonisOperator = false;
     }
 
     if(button.id === 'reset'){
         equationArray = [];
         numberFromScreen = '';
         resultWindow.textContent = '';
+        previousButtonisOperator = false;
     }
 
     if(button.id === 'plus-minus'){
@@ -85,6 +94,7 @@ buttonsContainer.addEventListener('click', e => {
             newDisplay = newDisplay + `${numberFromScreen}`;
             resultWindow.textContent = newDisplay;
         }
+        previousButtonisOperator = false;
     }
 
     if(button.id === 'delete'){
@@ -94,25 +104,15 @@ buttonsContainer.addEventListener('click', e => {
         })
         // if current display is number
         let numberArray = numberFromScreen.split("");
-        console.log(numberArray)
         numberArray.pop();
-        numberFromScreen = numberArray.toLocaleString();
         console.log(numberArray)
-        console.log(equationArray)
-        resultWindow.textContent = newDisplay + numberFromScreen;
-        // console.log(numberFromScreen);
-        // equationArray.push(numberFromScreen);
-        // numberFromScreen = ""
-        // console.log(equationArray);
-        // console.log(equationArray[equationArray.length-2])
-    //   if((equationArray[equationArray.length-1]) == "+"){
-    //       equationArray.pop();
-    //       console.log(equationArray);
-    //   }
-        
+        numberFromScreen = numberArray.join("");
+        console.log(newDisplay)
+        console.log(numberFromScreen)
+        resultWindow.textContent = newDisplay + numberFromScreen;  
+        previousButtonisOperator = false;
     }
-
-
+   
    }
 })
 
@@ -183,7 +183,16 @@ function operate(num1, num2, operator){
 const add = (a, b) => a+b;
 const subtract = (a, b) => a-b;
 const multiply = (a, b) => a*b;
-const divide = (a, b) => a/b;
+// const divide = (a, b) => a/b;
+
+const divide = function (a,b){
+    if(b === 0){
+        alert("You cannot divide by 0!")
+        return 0;
+    } else {
+        return a/b;
+    }
+}
 
 // let test = [9, "x", 9, "-", 6, "+", 0];
 // equationSolvingFunction(test);
